@@ -1,9 +1,31 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express')
+const axios = require('axios')
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+const router = express.Router()
 
-module.exports = router;
+router.get('/', async (req, res) => {
+  let error, balance
+  const address = req.query.address
+  const userJustLanded = address !== undefined
+  const api = `https://api.blockcypher.com/v1/eth/main/addrs/${address}/balance`
+
+  if (userJustLanded) {
+    if (address) {
+      try {
+        balance = (await axios.get(api)).data.balance
+      } catch (e) {
+        error = `Address "${address}" was not recognized!`
+      }
+    } else {
+      error = 'Address is required!'
+    }
+  }
+
+  res.render('index', {
+    address,
+    balance,
+    error,
+  })
+})
+
+module.exports = router

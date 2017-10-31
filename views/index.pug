@@ -1,5 +1,15 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  h1 Ethereum Balance Checker
+  form
+    input(type="hidden" value="")
+    label
+      div Enter Ethereum address
+      input(type="text" name="address" placeholder="Ethereum address" value=address)
+    div
+      input(type="submit" value="Get balance")
+  if error
+    .error= error
+  else if address
+    h2 Balance is: #{balance / 10e17} ETHs
